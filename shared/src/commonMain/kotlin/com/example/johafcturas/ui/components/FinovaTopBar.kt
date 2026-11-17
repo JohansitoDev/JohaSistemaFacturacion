@@ -5,29 +5,25 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ExitToApp
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.johafcturas.model.User
 import com.example.johafcturas.ui.theme.FinovaColors
 
-enum class NavigationTab(val label: String, val icon: ImageVector) {
-    DASHBOARD("Dashboard", Icons.Default.Home),
-    INVOICES("Facturas", Icons.Default.Receipt),
-    PRODUCTS("Productos", Icons.Default.Inventory),
-    CLIENTS("Clientes", Icons.Default.People),
-    ORGANIZATION("Organización & Roles", Icons.Default.CorporateFare),
-    SUPER_ADMIN("SuperAdmin", Icons.Default.AdminPanelSettings)
+enum class NavigationTab(val label: String, val icon: FinovaIconType) {
+    DASHBOARD("Dashboard", FinovaIconType.HOME),
+    INVOICES("Facturas", FinovaIconType.INVOICES),
+    PRODUCTS("Productos", FinovaIconType.PRODUCTS),
+    CLIENTS("Clientes", FinovaIconType.CLIENTS),
+    ORGANIZATION("Organización & Roles", FinovaIconType.ORGANIZATION),
+    SUPER_ADMIN("SuperAdmin", FinovaIconType.SUPER_ADMIN)
 }
 
 @Composable
@@ -65,7 +61,7 @@ fun FinovaTopBar(
             }
             Column {
                 Text(
-                    text = "JohaFcturas",
+                    text = "Finova",
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 20.sp,
                     color = FinovaColors.TextPrimary
@@ -90,7 +86,6 @@ fun FinovaTopBar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 NavigationTab.entries.forEach { tab ->
-                    // Hide SuperAdmin tab if current user is not SuperAdmin
                     if (tab == NavigationTab.SUPER_ADMIN && currentUser?.isSuperAdmin != true) {
                         return@forEach
                     }
@@ -108,11 +103,10 @@ fun FinovaTopBar(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(6.dp)
                         ) {
-                            Icon(
-                                imageVector = tab.icon,
-                                contentDescription = tab.label,
+                            FinovaIcon(
+                                type = tab.icon,
                                 tint = if (isSelected) FinovaColors.DarkTealHeader else Color.White.copy(alpha = 0.8f),
-                                modifier = Modifier.size(16.dp)
+                                size = 16.dp
                             )
                             Text(
                                 text = tab.label,
@@ -138,7 +132,7 @@ fun FinovaTopBar(
                     .clip(CircleShape)
                     .background(Color.White)
             ) {
-                Icon(Icons.Default.Search, contentDescription = "Search", tint = FinovaColors.TextPrimary, modifier = Modifier.size(20.dp))
+                FinovaIcon(FinovaIconType.SEARCH, tint = FinovaColors.TextPrimary, size = 18.dp)
             }
 
             Box {
@@ -149,9 +143,8 @@ fun FinovaTopBar(
                         .clip(CircleShape)
                         .background(Color.White)
                 ) {
-                    Icon(Icons.Default.Notifications, contentDescription = "Notifications", tint = FinovaColors.TextPrimary, modifier = Modifier.size(20.dp))
+                    FinovaIcon(FinovaIconType.BELL, tint = FinovaColors.TextPrimary, size = 18.dp)
                 }
-                // Notification Badge counter
                 Box(
                     modifier = Modifier
                         .size(16.dp)
@@ -171,12 +164,11 @@ fun FinovaTopBar(
                     .clip(CircleShape)
                     .background(Color.White)
             ) {
-                Icon(Icons.Default.HelpOutline, contentDescription = "Help", tint = FinovaColors.TextPrimary, modifier = Modifier.size(20.dp))
+                FinovaIcon(FinovaIconType.HELP, tint = FinovaColors.TextPrimary, size = 18.dp)
             }
 
             Spacer(Modifier.width(4.dp))
 
-            // User Profile Chip
             Row(
                 modifier = Modifier
                     .clip(RoundedCornerShape(24.dp))
@@ -216,11 +208,10 @@ fun FinovaTopBar(
                     onClick = onLogout,
                     modifier = Modifier.size(28.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                        contentDescription = "Cerrar Sesión",
+                    FinovaIcon(
+                        type = FinovaIconType.LOGOUT,
                         tint = FinovaColors.CrimsonRed,
-                        modifier = Modifier.size(18.dp)
+                        size = 16.dp
                     )
                 }
             }
