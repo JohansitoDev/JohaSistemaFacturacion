@@ -2,9 +2,11 @@ package com.example.johafcturas.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -40,132 +42,206 @@ fun InvoicesScreen(
         matchesSearch && matchesStatus
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
-    ) {
-        // --- Header Row ---
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column {
-                Text("Gestión de Facturación", fontWeight = FontWeight.ExtraBold, fontSize = 24.sp, color = FinovaColors.TextPrimary)
-                Text("Crea, consulta y gestiona el estado de tus comprobantes de venta", fontSize = 13.sp, color = FinovaColors.TextSecondary)
-            }
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        val isDesktop = maxWidth > 750.dp
 
-            Button(
-                onClick = { showCreateDialog = true },
-                colors = ButtonDefaults.buttonColors(containerColor = FinovaColors.DarkTealHeader),
-                shape = RoundedCornerShape(16.dp),
-                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    FinovaIcon(FinovaIconType.PLUS, tint = Color.White, size = 16.dp)
-                    Text("+ Nueva Factura", fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                }
-            }
-        }
-
-        // --- Filter & Search Bar ---
-        Surface(
-            color = Color.White,
-            shape = RoundedCornerShape(20.dp),
-            shadowElevation = 2.dp
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(if (isDesktop) 24.dp else 14.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // --- Header Row ---
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                OutlinedTextField(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },
-                    placeholder = { Text("Buscar factura o cliente...") },
-                    modifier = Modifier.width(320.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    singleLine = true
-                )
+                Column(modifier = Modifier.weight(1f)) {
+                    Text("Gestión de Facturación", fontWeight = FontWeight.ExtraBold, fontSize = if (isDesktop) 24.sp else 18.sp, color = FinovaColors.TextPrimary)
+                    Text("Comprobantes de venta y estado fiscal", fontSize = 12.sp, color = FinovaColors.TextSecondary)
+                }
 
-                // Filter Tabs
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    FilterChip(selected = selectedFilter == null, onClick = { selectedFilter = null }, label = { Text("Todas (${invoices.size})") })
-                    InvoiceStatus.entries.forEach { st ->
-                        FilterChip(selected = selectedFilter == st, onClick = { selectedFilter = st }, label = { Text(st.label) })
+                Button(
+                    onClick = { showCreateDialog = true },
+                    colors = ButtonDefaults.buttonColors(containerColor = FinovaColors.DarkTealHeader),
+                    shape = RoundedCornerShape(14.dp),
+                    contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        FinovaIcon(FinovaIconType.PLUS, tint = Color.White, size = 14.dp)
+                        Text("+ Nueva Factura", fontWeight = FontWeight.Bold, fontSize = 12.sp)
                     }
                 }
             }
-        }
 
-        // --- Invoices Table / List ---
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = Color.White,
-            shape = RoundedCornerShape(24.dp),
-            shadowElevation = 2.dp
-        ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+            // --- Filter & Search Bar ---
+            Surface(
+                color = Color.White,
+                shape = RoundedCornerShape(20.dp),
+                shadowElevation = 2.dp
             ) {
-                // Table Header
-                item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    OutlinedTextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        placeholder = { Text("Buscar factura o cliente...") },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(14.dp),
+                        singleLine = true
+                    )
+
+                    // Filter Tabs (Scrollable on mobile)
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(FinovaColors.SurfaceTint, RoundedCornerShape(12.dp))
-                            .padding(horizontal = 16.dp, vertical = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        modifier = Modifier.horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        Text("No. Factura", fontWeight = FontWeight.Bold, fontSize = 12.sp, modifier = Modifier.weight(1.2f), color = FinovaColors.TextSecondary)
-                        Text("Cliente", fontWeight = FontWeight.Bold, fontSize = 12.sp, modifier = Modifier.weight(1.8f), color = FinovaColors.TextSecondary)
-                        Text("Fecha", fontWeight = FontWeight.Bold, fontSize = 12.sp, modifier = Modifier.weight(1.2f), color = FinovaColors.TextSecondary)
-                        Text("ITBIS (18%)", fontWeight = FontWeight.Bold, fontSize = 12.sp, modifier = Modifier.weight(1.2f), color = FinovaColors.TextSecondary)
-                        Text("Total", fontWeight = FontWeight.Bold, fontSize = 12.sp, modifier = Modifier.weight(1.2f), color = FinovaColors.TextSecondary)
-                        Text("Estado", fontWeight = FontWeight.Bold, fontSize = 12.sp, modifier = Modifier.weight(1.2f), color = FinovaColors.TextSecondary)
-                        Text("Acciones", fontWeight = FontWeight.Bold, fontSize = 12.sp, modifier = Modifier.weight(1.2f), color = FinovaColors.TextSecondary)
+                        FilterChip(selected = selectedFilter == null, onClick = { selectedFilter = null }, label = { Text("Todas (${invoices.size})") })
+                        InvoiceStatus.entries.forEach { st ->
+                            FilterChip(selected = selectedFilter == st, onClick = { selectedFilter = st }, label = { Text(st.label) })
+                        }
                     }
                 }
+            }
 
-                items(filteredInvoices) { inv ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(if (inv.isActive) Color.White else FinovaColors.SurfaceTint.copy(alpha = 0.5f))
-                            .padding(horizontal = 16.dp, vertical = 14.dp),
-                        verticalAlignment = Alignment.CenterVertically
+            // --- Invoices Table / Cards ---
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = Color.White,
+                shape = RoundedCornerShape(24.dp),
+                shadowElevation = 2.dp
+            ) {
+                if (isDesktop) {
+                    // Desktop Data Table Layout
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize().padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        Text(inv.invoiceNumber, fontWeight = FontWeight.Bold, fontSize = 13.sp, modifier = Modifier.weight(1.2f), color = FinovaColors.TextPrimary)
-                        Text(inv.clientName, fontSize = 13.sp, modifier = Modifier.weight(1.8f), color = FinovaColors.TextPrimary)
-                        Text(inv.date, fontSize = 12.sp, modifier = Modifier.weight(1.2f), color = FinovaColors.TextSecondary)
-                        Text("$${inv.tax}", fontSize = 12.sp, modifier = Modifier.weight(1.2f), color = FinovaColors.TextSecondary)
-                        Text("$${inv.total}", fontWeight = FontWeight.Bold, fontSize = 13.sp, modifier = Modifier.weight(1.2f), color = FinovaColors.TextPrimary)
-
-                        Box(modifier = Modifier.weight(1.2f)) {
-                            InvoiceStatusBadge(inv.status)
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(FinovaColors.SurfaceTint, RoundedCornerShape(12.dp))
+                                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text("No. Factura", fontWeight = FontWeight.Bold, fontSize = 12.sp, modifier = Modifier.weight(1.2f), color = FinovaColors.TextSecondary)
+                                Text("Cliente", fontWeight = FontWeight.Bold, fontSize = 12.sp, modifier = Modifier.weight(1.8f), color = FinovaColors.TextSecondary)
+                                Text("Fecha", fontWeight = FontWeight.Bold, fontSize = 12.sp, modifier = Modifier.weight(1.2f), color = FinovaColors.TextSecondary)
+                                Text("ITBIS (18%)", fontWeight = FontWeight.Bold, fontSize = 12.sp, modifier = Modifier.weight(1.2f), color = FinovaColors.TextSecondary)
+                                Text("Total", fontWeight = FontWeight.Bold, fontSize = 12.sp, modifier = Modifier.weight(1.2f), color = FinovaColors.TextSecondary)
+                                Text("Estado", fontWeight = FontWeight.Bold, fontSize = 12.sp, modifier = Modifier.weight(1.2f), color = FinovaColors.TextSecondary)
+                                Text("Acciones", fontWeight = FontWeight.Bold, fontSize = 12.sp, modifier = Modifier.weight(1.2f), color = FinovaColors.TextSecondary)
+                            }
                         }
 
-                        Row(modifier = Modifier.weight(1.2f), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            SoftDeleteActiveBadge(inv.isActive)
-                            Box(
+                        items(filteredInvoices) { inv ->
+                            Row(
                                 modifier = Modifier
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(FinovaColors.SurfaceTint)
-                                    .clickable { onToggleStatus(inv.id) }
-                                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(if (inv.isActive) Color.White else FinovaColors.SurfaceTint.copy(alpha = 0.5f))
+                                    .padding(horizontal = 16.dp, vertical = 14.dp),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(
-                                    text = if (inv.isActive) "Desactivar" else "Activar",
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (inv.isActive) FinovaColors.CrimsonRed else FinovaColors.EmeraldGreen
-                                )
+                                Text(inv.invoiceNumber, fontWeight = FontWeight.Bold, fontSize = 13.sp, modifier = Modifier.weight(1.2f), color = FinovaColors.TextPrimary)
+                                Text(inv.clientName, fontSize = 13.sp, modifier = Modifier.weight(1.8f), color = FinovaColors.TextPrimary)
+                                Text(inv.date, fontSize = 12.sp, modifier = Modifier.weight(1.2f), color = FinovaColors.TextSecondary)
+                                Text("$${inv.tax}", fontSize = 12.sp, modifier = Modifier.weight(1.2f), color = FinovaColors.TextSecondary)
+                                Text("$${inv.total}", fontWeight = FontWeight.Bold, fontSize = 13.sp, modifier = Modifier.weight(1.2f), color = FinovaColors.TextPrimary)
+
+                                Box(modifier = Modifier.weight(1.2f)) {
+                                    InvoiceStatusBadge(inv.status)
+                                }
+
+                                Row(modifier = Modifier.weight(1.2f), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    SoftDeleteActiveBadge(inv.isActive)
+                                    Box(
+                                        modifier = Modifier
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .background(FinovaColors.SurfaceTint)
+                                            .clickable { onToggleStatus(inv.id) }
+                                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                                    ) {
+                                        Text(
+                                            text = if (inv.isActive) "Desactivar" else "Activar",
+                                            fontSize = 11.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = if (inv.isActive) FinovaColors.CrimsonRed else FinovaColors.EmeraldGreen
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    // Mobile Cards List Layout
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize().padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        items(filteredInvoices) { inv ->
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(if (inv.isActive) FinovaColors.SurfaceTint else Color.LightGray.copy(alpha = 0.2f))
+                                    .padding(14.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(inv.invoiceNumber, fontWeight = FontWeight.ExtraBold, fontSize = 14.sp, color = FinovaColors.DarkTealHeader)
+                                    InvoiceStatusBadge(inv.status)
+                                }
+
+                                Text(inv.clientName, fontWeight = FontWeight.Bold, fontSize = 13.sp, color = FinovaColors.TextPrimary)
+
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Column {
+                                        Text("Fecha: ${inv.date}", fontSize = 11.sp, color = FinovaColors.TextSecondary)
+                                        Text("ITBIS: $${inv.tax}", fontSize = 11.sp, color = FinovaColors.TextSecondary)
+                                    }
+
+                                    Text("$${inv.total}", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, color = FinovaColors.EmeraldGreen)
+                                }
+
+                                HorizontalDivider()
+
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    SoftDeleteActiveBadge(inv.isActive)
+
+                                    Box(
+                                        modifier = Modifier
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .background(Color.White)
+                                            .clickable { onToggleStatus(inv.id) }
+                                            .padding(horizontal = 10.dp, vertical = 6.dp)
+                                    ) {
+                                        Text(
+                                            text = if (inv.isActive) "Desactivar" else "Reactivar",
+                                            fontSize = 11.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = if (inv.isActive) FinovaColors.CrimsonRed else FinovaColors.EmeraldGreen
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
@@ -174,7 +250,6 @@ fun InvoicesScreen(
         }
     }
 
-    // Modal Create Invoice Dialog
     if (showCreateDialog) {
         CreateInvoiceModal(
             products = products,

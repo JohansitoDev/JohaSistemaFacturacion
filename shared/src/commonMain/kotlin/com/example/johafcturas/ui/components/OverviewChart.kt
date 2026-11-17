@@ -10,9 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -28,7 +26,7 @@ fun OverviewChartCard(
     dataPoints: List<OverviewDataPoint>,
     modifier: Modifier = Modifier
 ) {
-    var selectedIndex by remember { mutableStateOf(3) } // Default selected: 18 Apr
+    var selectedIndex by remember { mutableStateOf(3) }
 
     Surface(
         modifier = modifier.fillMaxWidth(),
@@ -37,10 +35,10 @@ fun OverviewChartCard(
         shadowElevation = 2.dp
     ) {
         Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            // Header Row: Title, Totals, Filter Selector
+            // Header Row: Title & Month Filter
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -53,62 +51,63 @@ fun OverviewChartCard(
                     color = FinovaColors.TextPrimary
                 )
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                Surface(
+                    color = FinovaColors.SurfaceTint,
+                    shape = RoundedCornerShape(16.dp)
                 ) {
-                    // Income Summary Pill
                     Row(
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        Box(modifier = Modifier.size(8.dp).clip(RoundedCornerShape(4.dp)).background(FinovaColors.EmeraldGreen))
-                        Text("Income", fontSize = 12.sp, color = FinovaColors.TextSecondary)
-                        Text("$18,750.00", fontWeight = FontWeight.Bold, fontSize = 13.sp, color = FinovaColors.TextPrimary)
-                        Box(
-                            modifier = Modifier.clip(RoundedCornerShape(12.dp)).background(FinovaColors.EmeraldGreen.copy(alpha = 0.15f)).padding(horizontal = 6.dp, vertical = 2.dp)
-                        ) {
-                            Text("↑ 8.4%", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = FinovaColors.EmeraldGreen)
-                        }
-                    }
-
-                    // Expense Summary Pill
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        Box(modifier = Modifier.size(8.dp).clip(RoundedCornerShape(4.dp)).background(FinovaColors.BlueAccent))
-                        Text("Expense", fontSize = 12.sp, color = FinovaColors.TextSecondary)
-                        Text("$7,250.00", fontWeight = FontWeight.Bold, fontSize = 13.sp, color = FinovaColors.TextPrimary)
-                        Box(
-                            modifier = Modifier.clip(RoundedCornerShape(12.dp)).background(FinovaColors.CrimsonRed.copy(alpha = 0.15f)).padding(horizontal = 6.dp, vertical = 2.dp)
-                        ) {
-                            Text("↑ 3.2%", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = FinovaColors.CrimsonRed)
-                        }
-                    }
-
-                    // Month Filter Dropdown Pill
-                    Surface(
-                        color = FinovaColors.SurfaceTint,
-                        shape = RoundedCornerShape(16.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Text("This Month", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = FinovaColors.TextPrimary)
-                            Text("▾", fontSize = 11.sp, color = FinovaColors.TextSecondary)
-                        }
+                        Text("This Month", fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = FinovaColors.TextPrimary)
+                        Text("▾", fontSize = 10.sp, color = FinovaColors.TextSecondary)
                     }
                 }
             }
 
-            // Canvas Line & Area Chart with curved path & Tooltip
+            // Income / Expense Metrics Row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Income Summary Pill
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Box(modifier = Modifier.size(8.dp).clip(RoundedCornerShape(4.dp)).background(FinovaColors.EmeraldGreen))
+                    Text("Income", fontSize = 11.sp, color = FinovaColors.TextSecondary)
+                    Text("$18,750.00", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = FinovaColors.TextPrimary)
+                    Box(
+                        modifier = Modifier.clip(RoundedCornerShape(10.dp)).background(FinovaColors.EmeraldGreen.copy(alpha = 0.15f)).padding(horizontal = 4.dp, vertical = 2.dp)
+                    ) {
+                        Text("↑ 8.4%", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = FinovaColors.EmeraldGreen)
+                    }
+                }
+
+                // Expense Summary Pill
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Box(modifier = Modifier.size(8.dp).clip(RoundedCornerShape(4.dp)).background(FinovaColors.BlueAccent))
+                    Text("Expense", fontSize = 11.sp, color = FinovaColors.TextSecondary)
+                    Text("$7,250.00", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = FinovaColors.TextPrimary)
+                    Box(
+                        modifier = Modifier.clip(RoundedCornerShape(10.dp)).background(FinovaColors.CrimsonRed.copy(alpha = 0.15f)).padding(horizontal = 4.dp, vertical = 2.dp)
+                    ) {
+                        Text("↑ 3.2%", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = FinovaColors.CrimsonRed)
+                    }
+                }
+            }
+
+            // Canvas Line & Area Chart
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(180.dp)
+                    .height(160.dp)
             ) {
                 val activePoint = dataPoints.getOrNull(selectedIndex)
 
@@ -123,9 +122,8 @@ fun OverviewChartCard(
                     val height = size.height
                     val maxVal = 20000f
 
-                    // Grid lines & Y-Labels
                     val gridSteps = listOf("20k", "15k", "10k", "5k", "0")
-                    gridSteps.forEachIndexed { i, label ->
+                    gridSteps.forEachIndexed { i, _ ->
                         val y = (height / 4) * i
                         drawLine(
                             color = FinovaColors.BorderLight,
@@ -181,7 +179,6 @@ fun OverviewChartCard(
                     expenseFillPath.lineTo(width, height)
                     expenseFillPath.close()
 
-                    // Draw Gradient Fills
                     drawPath(
                         path = incomeFillPath,
                         brush = Brush.verticalGradient(
@@ -196,11 +193,9 @@ fun OverviewChartCard(
                         )
                     )
 
-                    // Draw Curved Lines
                     drawPath(incomePath, color = FinovaColors.EmeraldGreen, style = Stroke(width = 3f))
                     drawPath(expensePath, color = FinovaColors.BlueAccent, style = Stroke(width = 3f))
 
-                    // Draw Active Selection Vertical Marker
                     if (selectedIndex in dataPoints.indices) {
                         val selX = selectedIndex * stepX
                         drawLine(
@@ -214,32 +209,31 @@ fun OverviewChartCard(
                         val incY = height - (point.income.toFloat() / maxVal * height)
                         val expY = height - (point.expense.toFloat() / maxVal * height)
 
-                        drawCircle(color = Color.White, radius = 6f, center = Offset(selX, incY))
-                        drawCircle(color = FinovaColors.EmeraldGreen, radius = 4f, center = Offset(selX, incY))
+                        drawCircle(color = Color.White, radius = 5f, center = Offset(selX, incY))
+                        drawCircle(color = FinovaColors.EmeraldGreen, radius = 3.5f, center = Offset(selX, incY))
 
-                        drawCircle(color = Color.White, radius = 6f, center = Offset(selX, expY))
-                        drawCircle(color = FinovaColors.BlueAccent, radius = 4f, center = Offset(selX, expY))
+                        drawCircle(color = Color.White, radius = 5f, center = Offset(selX, expY))
+                        drawCircle(color = FinovaColors.BlueAccent, radius = 3.5f, center = Offset(selX, expY))
                     }
                 }
 
-                // Interactive Tooltip Box
                 activePoint?.let { point ->
                     Surface(
                         modifier = Modifier
                             .align(Alignment.TopCenter)
-                            .padding(top = 10.dp),
+                            .padding(top = 4.dp),
                         color = Color.White,
-                        shape = RoundedCornerShape(12.dp),
-                        shadowElevation = 6.dp
+                        shape = RoundedCornerShape(10.dp),
+                        shadowElevation = 4.dp
                     ) {
                         Column(
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                             verticalArrangement = Arrangement.spacedBy(2.dp)
                         ) {
-                            Text(point.label, fontWeight = FontWeight.Bold, fontSize = 11.sp, color = FinovaColors.TextPrimary)
-                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Text("• Income $${point.income.toInt()}", fontSize = 10.sp, color = FinovaColors.EmeraldGreen, fontWeight = FontWeight.Bold)
-                                Text("• Expense $${point.expense.toInt()}", fontSize = 10.sp, color = FinovaColors.BlueAccent, fontWeight = FontWeight.Bold)
+                            Text(point.label, fontWeight = FontWeight.Bold, fontSize = 10.sp, color = FinovaColors.TextPrimary)
+                            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                Text("• Inc $${point.income.toInt()}", fontSize = 9.sp, color = FinovaColors.EmeraldGreen, fontWeight = FontWeight.Bold)
+                                Text("• Exp $${point.expense.toInt()}", fontSize = 9.sp, color = FinovaColors.BlueAccent, fontWeight = FontWeight.Bold)
                             }
                         }
                     }
@@ -254,7 +248,7 @@ fun OverviewChartCard(
                 dataPoints.forEachIndexed { i, pt ->
                     Text(
                         text = pt.label,
-                        fontSize = 11.sp,
+                        fontSize = 10.sp,
                         color = if (i == selectedIndex) FinovaColors.TextPrimary else FinovaColors.TextMuted,
                         fontWeight = if (i == selectedIndex) FontWeight.Bold else FontWeight.Normal
                     )

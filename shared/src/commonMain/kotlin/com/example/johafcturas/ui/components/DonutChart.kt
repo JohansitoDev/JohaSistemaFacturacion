@@ -32,8 +32,8 @@ fun DonutChartCard(
         shadowElevation = 2.dp
     ) {
         Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             // Header
             Row(
@@ -63,7 +63,7 @@ fun DonutChartCard(
                 }
             }
 
-            // Donut & Legend Content
+            // Donut & Legend Content (Responsive Row / Flow)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -71,11 +71,11 @@ fun DonutChartCard(
             ) {
                 // Donut Canvas with Center Text
                 Box(
-                    modifier = Modifier.size(130.dp),
+                    modifier = Modifier.size(110.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Canvas(modifier = Modifier.fillMaxSize()) {
-                        val strokeWidth = 24.dp.toPx()
+                        val strokeWidth = 20.dp.toPx()
                         var startAngle = -90f
 
                         categories.forEach { item ->
@@ -95,12 +95,12 @@ fun DonutChartCard(
                         Text(
                             text = "$${totalAmount.toInt()}",
                             fontWeight = FontWeight.ExtraBold,
-                            fontSize = 17.sp,
+                            fontSize = 15.sp,
                             color = FinovaColors.TextPrimary
                         )
                         Text(
                             text = "Total",
-                            fontSize = 11.sp,
+                            fontSize = 10.sp,
                             color = FinovaColors.TextSecondary
                         )
                     }
@@ -108,30 +108,32 @@ fun DonutChartCard(
 
                 // Legend Column
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.padding(start = 12.dp)
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 12.dp)
                 ) {
                     categories.forEach { item ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .size(8.dp)
+                                    .size(7.dp)
                                     .clip(CircleShape)
                                     .background(Color(item.colorHex))
                             )
                             Text(
                                 text = item.category,
-                                fontSize = 12.sp,
+                                fontSize = 11.sp,
                                 color = FinovaColors.TextSecondary,
                                 modifier = Modifier.weight(1f)
                             )
                             Text(
                                 text = "${item.percentage.toInt()}%",
-                                fontSize = 12.sp,
+                                fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = FinovaColors.TextPrimary
                             )

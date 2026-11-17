@@ -2,7 +2,9 @@ package com.example.johafcturas.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
@@ -19,36 +21,70 @@ import com.example.johafcturas.ui.theme.FinovaColors
 
 @Composable
 fun FinovaBottomBar() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 12.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // Pill 1: Active Users
-        BottomStatPill(
-            modifier = Modifier.weight(1f),
-            icon = FinovaIconType.CLIENTS,
-            value = "2.4M+",
-            label = "Active Users"
-        )
+    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+        val isDesktop = maxWidth > 800.dp
 
-        // Pill 2: Transactions Processed
-        BottomStatPill(
-            modifier = Modifier.weight(1.5f),
-            icon = FinovaIconType.BANK,
-            value = "$850 Cr+",
-            label = "Transactions Processed"
-        )
+        if (isDesktop) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                BottomStatPill(
+                    modifier = Modifier.weight(1f),
+                    icon = FinovaIconType.CLIENTS,
+                    value = "2.4M+",
+                    label = "Active Users"
+                )
 
-        // Pill 3: Security Status
-        BottomStatPill(
-            modifier = Modifier.weight(1f),
-            icon = FinovaIconType.SHIELD,
-            value = "99.9%",
-            label = "Secure & Reliable"
-        )
+                BottomStatPill(
+                    modifier = Modifier.weight(1.5f),
+                    icon = FinovaIconType.BANK,
+                    value = "$850 Cr+",
+                    label = "Transactions Processed"
+                )
+
+                BottomStatPill(
+                    modifier = Modifier.weight(1f),
+                    icon = FinovaIconType.SHIELD,
+                    value = "99.9%",
+                    label = "Secure & Reliable"
+                )
+            }
+        } else {
+            // Scrollable pills row for mobile screens
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                BottomStatPill(
+                    modifier = Modifier.width(240.dp),
+                    icon = FinovaIconType.CLIENTS,
+                    value = "2.4M+",
+                    label = "Active Users"
+                )
+
+                BottomStatPill(
+                    modifier = Modifier.width(280.dp),
+                    icon = FinovaIconType.BANK,
+                    value = "$850 Cr+",
+                    label = "Transactions Processed"
+                )
+
+                BottomStatPill(
+                    modifier = Modifier.width(240.dp),
+                    icon = FinovaIconType.SHIELD,
+                    value = "99.9%",
+                    label = "Secure & Reliable"
+                )
+            }
+        }
     }
 }
 
@@ -67,45 +103,45 @@ private fun BottomStatPill(
     ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 10.dp)
+                .padding(horizontal = 14.dp, vertical = 8.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Box(
                     modifier = Modifier
-                        .size(36.dp)
+                        .size(32.dp)
                         .clip(CircleShape)
                         .background(Color.White.copy(alpha = 0.2f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    FinovaIcon(type = icon, tint = Color.White, size = 18.dp)
+                    FinovaIcon(type = icon, tint = Color.White, size = 16.dp)
                 }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
                         text = value,
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 15.sp
+                        fontSize = 14.sp
                     )
                     Text(
                         text = label,
                         color = Color.White.copy(alpha = 0.8f),
-                        fontSize = 12.sp
+                        fontSize = 11.sp
                     )
                 }
             }
 
             Box(
                 modifier = Modifier
-                    .size(30.dp)
+                    .size(26.dp)
                     .clip(CircleShape)
                     .background(Color.White.copy(alpha = 0.2f))
                     .clickable { },
@@ -115,7 +151,7 @@ private fun BottomStatPill(
                     text = "→",
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
+                    fontSize = 12.sp
                 )
             }
         }

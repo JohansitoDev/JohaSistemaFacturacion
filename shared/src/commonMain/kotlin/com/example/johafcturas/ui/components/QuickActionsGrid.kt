@@ -40,8 +40,8 @@ fun QuickActionsGridCard(
         shadowElevation = 4.dp
     ) {
         Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             // Header: Title & Green Plus Button
             Row(
@@ -58,13 +58,13 @@ fun QuickActionsGridCard(
 
                 Box(
                     modifier = Modifier
-                        .size(32.dp)
+                        .size(30.dp)
                         .clip(CircleShape)
                         .background(FinovaColors.EmeraldGreen)
                         .clickable { onActionClicked(QuickActionType.NUEVA_FACTURA) },
                     contentAlignment = Alignment.Center
                 ) {
-                    FinovaIcon(type = FinovaIconType.PLUS, tint = Color.Black, size = 16.dp)
+                    FinovaIcon(type = FinovaIconType.PLUS, tint = Color.Black, size = 14.dp)
                 }
             }
 
@@ -76,24 +76,24 @@ fun QuickActionsGridCard(
                 QuickActionType.entries.forEach { action ->
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
                         modifier = Modifier
                             .weight(1f)
                             .clickable { onActionClicked(action) }
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(48.dp)
-                                .clip(RoundedCornerShape(14.dp))
+                                .size(44.dp)
+                                .clip(RoundedCornerShape(12.dp))
                                 .background(action.color.copy(alpha = 0.25f)),
                             contentAlignment = Alignment.Center
                         ) {
-                            FinovaIcon(type = action.icon, tint = action.color, size = 22.dp)
+                            FinovaIcon(type = action.icon, tint = action.color, size = 20.dp)
                         }
                         Text(
                             text = action.label,
                             color = Color.White.copy(alpha = 0.9f),
-                            fontSize = 11.sp,
+                            fontSize = 10.sp,
                             fontWeight = FontWeight.Medium
                         )
                     }

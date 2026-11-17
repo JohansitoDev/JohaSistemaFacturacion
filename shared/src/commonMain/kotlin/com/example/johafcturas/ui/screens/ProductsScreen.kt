@@ -35,138 +35,142 @@ fun ProductsScreen(
         it.name.contains(searchQuery, ignoreCase = true) || it.sku.contains(searchQuery, ignoreCase = true)
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
-    ) {
-        // Header
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column {
-                Text("Catálogo de Productos e Inventario", fontWeight = FontWeight.ExtraBold, fontSize = 24.sp, color = FinovaColors.TextPrimary)
-                Text("Gestiona los productos, precios y niveles de stock de tu empresa", fontSize = 13.sp, color = FinovaColors.TextSecondary)
-            }
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        val isDesktop = maxWidth > 750.dp
 
-            Button(
-                onClick = { showAddDialog = true },
-                colors = ButtonDefaults.buttonColors(containerColor = FinovaColors.DarkTealHeader),
-                shape = RoundedCornerShape(16.dp),
-                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    FinovaIcon(FinovaIconType.PLUS, tint = Color.White, size = 16.dp)
-                    Text("+ Nuevo Producto", fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                }
-            }
-        }
-
-        // Search Bar
-        Surface(
-            color = Color.White,
-            shape = RoundedCornerShape(20.dp),
-            shadowElevation = 2.dp
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                OutlinedTextField(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },
-                    placeholder = { Text("Buscar por nombre o SKU...") },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(14.dp),
-                    singleLine = true
-                )
-            }
-        }
-
-        // Products Grid
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 280.dp),
-            modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(if (isDesktop) 24.dp else 14.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(filteredProducts) { prod ->
-                Surface(
-                    color = Color.White,
-                    shape = RoundedCornerShape(24.dp),
-                    shadowElevation = 2.dp
+            // Header
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text("Catálogo de Productos", fontWeight = FontWeight.ExtraBold, fontSize = if (isDesktop) 24.sp else 18.sp, color = FinovaColors.TextPrimary)
+                    Text("Inventario, precios y stock", fontSize = 12.sp, color = FinovaColors.TextSecondary)
+                }
+
+                Button(
+                    onClick = { showAddDialog = true },
+                    colors = ButtonDefaults.buttonColors(containerColor = FinovaColors.DarkTealHeader),
+                    shape = RoundedCornerShape(14.dp),
+                    contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp)
                 ) {
-                    Column(
-                        modifier = Modifier.padding(20.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        FinovaIcon(FinovaIconType.PLUS, tint = Color.White, size = 14.dp)
+                        Text("+ Nuevo Producto", fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                    }
+                }
+            }
+
+            // Search Bar
+            Surface(
+                color = Color.White,
+                shape = RoundedCornerShape(20.dp),
+                shadowElevation = 2.dp
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedTextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        placeholder = { Text("Buscar por nombre o SKU...") },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(14.dp),
+                        singleLine = true
+                    )
+                }
+            }
+
+            // Products Grid
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(minSize = if (isDesktop) 280.dp else 220.dp),
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
+                items(filteredProducts) { prod ->
+                    Surface(
+                        color = Color.White,
+                        shape = RoundedCornerShape(24.dp),
+                        shadowElevation = 2.dp
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(10.dp))
-                                    .background(FinovaColors.SurfaceTint)
-                                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(prod.category, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = FinovaColors.TextSecondary)
-                            }
-                            SoftDeleteActiveBadge(prod.isActive)
-                        }
-
-                        Text(prod.name, fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, color = FinovaColors.TextPrimary)
-                        Text("SKU: ${prod.sku}", fontSize = 12.sp, color = FinovaColors.TextMuted)
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Column {
-                                Text("Precio Venta", fontSize = 11.sp, color = FinovaColors.TextSecondary)
-                                Text("$${prod.price}", fontWeight = FontWeight.ExtraBold, fontSize = 18.sp, color = FinovaColors.EmeraldGreen)
+                                Box(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(FinovaColors.SurfaceTint)
+                                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                                ) {
+                                    Text(prod.category, fontSize = 10.sp, fontWeight = FontWeight.Bold, color = FinovaColors.TextSecondary)
+                                }
+                                SoftDeleteActiveBadge(prod.isActive)
                             }
 
-                            Column(horizontalAlignment = Alignment.End) {
-                                Text("Stock Disponible", fontSize = 11.sp, color = FinovaColors.TextSecondary)
-                                Text(
-                                    text = "${prod.stock} unidades",
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 14.sp,
-                                    color = if (prod.stock < 5) FinovaColors.CrimsonRed else FinovaColors.TextPrimary
-                                )
-                            }
-                        }
+                            Text(prod.name, fontWeight = FontWeight.ExtraBold, fontSize = 15.sp, color = FinovaColors.TextPrimary)
+                            Text("SKU: ${prod.sku}", fontSize = 11.sp, color = FinovaColors.TextMuted)
 
-                        HorizontalDivider()
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text("Costo: $${prod.cost}", fontSize = 11.sp, color = FinovaColors.TextSecondary)
-
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(10.dp))
-                                    .background(FinovaColors.SurfaceTint)
-                                    .clickable { onToggleStatus(prod.id) }
-                                    .padding(horizontal = 10.dp, vertical = 4.dp)
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(
-                                    text = if (prod.isActive) "Desactivar" else "Reactivar",
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (prod.isActive) FinovaColors.CrimsonRed else FinovaColors.EmeraldGreen
-                                )
+                                Column {
+                                    Text("Precio Venta", fontSize = 10.sp, color = FinovaColors.TextSecondary)
+                                    Text("$${prod.price}", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, color = FinovaColors.EmeraldGreen)
+                                }
+
+                                Column(horizontalAlignment = Alignment.End) {
+                                    Text("Stock", fontSize = 10.sp, color = FinovaColors.TextSecondary)
+                                    Text(
+                                        text = "${prod.stock} ud.",
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 13.sp,
+                                        color = if (prod.stock < 5) FinovaColors.CrimsonRed else FinovaColors.TextPrimary
+                                    )
+                                }
+                            }
+
+                            HorizontalDivider()
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text("Costo: $${prod.cost}", fontSize = 10.sp, color = FinovaColors.TextSecondary)
+
+                                Box(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(FinovaColors.SurfaceTint)
+                                        .clickable { onToggleStatus(prod.id) }
+                                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                                ) {
+                                    Text(
+                                        text = if (prod.isActive) "Desactivar" else "Reactivar",
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (prod.isActive) FinovaColors.CrimsonRed else FinovaColors.EmeraldGreen
+                                    )
+                                }
                             }
                         }
                     }
